@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import { useQuery } from 'react-query';
 
 import { Text } from '../components/Text';
 import colors from '../constants/colors';
@@ -18,21 +19,18 @@ const styles = StyleSheet.create({
 
 export const Post = ({ route }) => {
   const post = route?.params?.post;
-  const [comments, setComments] = React.useState([]);
 
-  React.useEffect(() => {
-    fetch(`https://jsonplaceholder.typicode.com/comments?postId=${post.id}`)
-      .then(res => res.json())
-      .then(response => {
-        setComments(response);
-      });
-  }, []);
+  const { data: comments } = useQuery(['comments', post.id], () =>
+    fetch(
+      `https://jsonplaceholder.typicode.com/comments?postId=${post.id}`,
+    ).then(res => res.json()),
+  );
 
   return (
     <ScrollView style={styles.container}>
       <Text type="header">{post.title}</Text>
       <Text>{post.body}</Text>
-      {comments.length > 0 && (
+      {comments && comments.length > 0 && (
         <>
           <Text type="header" style={{ marginTop: 20 }}>
             Comments

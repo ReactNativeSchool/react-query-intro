@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { useQuery } from 'react-query';
 
 import { Text } from '../components/Text';
 import colors from '../constants/colors';
@@ -17,25 +18,20 @@ const styles = StyleSheet.create({
 });
 
 export const List = ({ navigation }) => {
-  const [data, setData] = React.useState([]);
-
-  React.useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/posts')
-      .then(res => res.json())
-      .then(response => {
-        setData(response);
-      });
-  }, []);
+  const { data } = useQuery('posts', () =>
+    fetch('https://jsonplaceholder.typicode.com/posts').then(res => res.json()),
+  );
 
   return (
     <FlatList
       data={data}
       style={styles.container}
+      keyExtractor={item => `${item.id}`}
       renderItem={({ item }) => (
         <TouchableOpacity
           onPress={() => navigation.push('Post', { post: item })}
         >
-          <View key={item.id} style={styles.item}>
+          <View style={styles.item}>
             <Text>{item.title}</Text>
           </View>
         </TouchableOpacity>
