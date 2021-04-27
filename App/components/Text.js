@@ -16,10 +16,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: -12, // assum this shows up under a headerText
   },
+  defaultText: {
+    color: colors.primary,
+    fontSize: 18,
+  },
 });
 
 export const Text = ({ type, children, style = {} }) => {
-  const textStyles = [];
+  const textStyles = [styles.defaultText];
 
   if (type === 'header') {
     textStyles.push(styles.headerText);
